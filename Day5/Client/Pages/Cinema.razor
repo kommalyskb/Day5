@@ -1,0 +1,49 @@
+﻿@page "/cinema"
+@inject IHttpService Http
+
+<a href="cinema/create" class="btn btn-primary">Create</a>
+
+@if(movies == null)
+{
+    <span>Loading....</span>
+}
+else if(movies.Count == 0)
+{
+    <span>No records</span>
+}
+else
+{
+    <div>
+        @foreach (var movie in movies)
+        {
+            <p>Title: <b>@movie.Title</b></p>
+            <p>Release Date: @movie.ReleaseDate.Value.ToString("dd MMM yyyy")</p>
+            <p>
+                <img src="@movie.Poster" alt="Poster" style="width:350px" />
+            </p>
+        }
+    </div>
+}
+
+
+@code {
+
+    List<Movie> movies;
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(2000);
+        var response = await Http.Get<List<Movie>>("api/Movie/GetAllMovie");
+        if (!response.Success)
+        {
+            Console.WriteLine("Could not connect");
+            movies = new List<Movie>();
+        }
+        else
+        {
+            movies = response.Response;
+        }
+
+       
+
+    }
+}

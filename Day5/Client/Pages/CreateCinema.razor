@@ -1,0 +1,31 @@
+﻿@page "/cinema/create"
+@inject IHttpService http
+
+<EditForm Model="movie" OnSubmit="OnSubmit">
+    <div class="form-group">
+        <label for="Title">Title</label>
+        <InputText @bind-Value="movie.Title" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="ReleaseDate">Release Date</label>
+        <InputDate @bind-Value="movie.ReleaseDate" class="form-control"/>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Create New Movie</button>
+    </div>
+</EditForm>
+
+@code {
+    Movie movie = new Movie();
+    private async Task OnSubmit()
+    {
+        // Call to API
+
+        var response = await http.Post<Movie, DefaultResponse<Movie>>("api/movie/createmovie", movie);
+
+        Console.WriteLine($"Code: {response.Response.Code}");
+        Console.WriteLine($"Message: {response.Response.Message}");
+        Console.WriteLine($"Object.Title: {response.Response.Response.Title}");
+        Console.WriteLine($"Object.Release: {response.Response.Response.ReleaseDate.Value.ToString("dd/MM/yyyy")}");
+    }
+}
